@@ -38,7 +38,11 @@ class QueryCaller extends Query
      */
     final public function select(): array
     {
-        $connection = DatabaseConnections::get($this->connector);
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
@@ -56,7 +60,11 @@ class QueryCaller extends Query
      */
     final public function selectDistinct(): array
     {
-        $connection = DatabaseConnections::get($this->connector);
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
@@ -70,7 +78,11 @@ class QueryCaller extends Query
      */
     final public function count(string $countableField): int
     {
-        $connection = DatabaseConnections::get($this->connector);
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
@@ -94,7 +106,11 @@ class QueryCaller extends Query
      */
     final public function insert(): bool
     {
-        $connection = DatabaseConnections::get($this->connector);
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
@@ -108,7 +124,11 @@ class QueryCaller extends Query
      */
     final public function update(): bool
     {
-        $connection = DatabaseConnections::get($this->connector);
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
@@ -118,7 +138,11 @@ class QueryCaller extends Query
 
     final public function extractSchemaColumns(Schema $schema)
     {
-        $connection = DatabaseConnections::get($this->connector);
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
