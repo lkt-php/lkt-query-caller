@@ -10,6 +10,17 @@ use function Lkt\Tools\Pagination\getTotalPages;
 class QueryCaller extends Query
 {
     protected $connector = '';
+    protected $forceRefresh = false;
+
+    /**
+     * @param bool $status
+     * @return $this
+     */
+    public function setForceRefresh(bool $status): self
+    {
+        $this->forceRefresh= $status;
+        return $this;
+    }
 
     /**
      * @param string $name
@@ -28,6 +39,9 @@ class QueryCaller extends Query
     final public function select(): array
     {
         $connection = DatabaseConnections::get($this->connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
         $r = $connection->query($this->getSelectQuery());
 
         if (!is_array($r)) {
@@ -43,6 +57,9 @@ class QueryCaller extends Query
     final public function selectDistinct(): array
     {
         $connection = DatabaseConnections::get($this->connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
         return $connection->query($this->getSelectDistinctQuery());
     }
 
@@ -54,6 +71,9 @@ class QueryCaller extends Query
     final public function count(string $countableField): int
     {
         $connection = DatabaseConnections::get($this->connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
         $results = $connection->query($this->getCountQuery($countableField));
         return (int)$results[0]['Count'];
     }
@@ -75,6 +95,9 @@ class QueryCaller extends Query
     final public function insert(): bool
     {
         $connection = DatabaseConnections::get($this->connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
         $connection->query($this->getInsertQuery());
         return true;
     }
@@ -86,6 +109,9 @@ class QueryCaller extends Query
     final public function update(): bool
     {
         $connection = DatabaseConnections::get($this->connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
         $connection->query($this->getUpdateQuery());
         return true;
     }
@@ -93,6 +119,9 @@ class QueryCaller extends Query
     final public function extractSchemaColumns(Schema $schema)
     {
         $connection = DatabaseConnections::get($this->connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
         $this->setColumns($connection->extractSchemaColumns($schema));
     }
 }
