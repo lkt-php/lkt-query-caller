@@ -2,6 +2,7 @@
 
 namespace Lkt\QueryCaller;
 
+use Exception;
 use Lkt\DatabaseConnectors\DatabaseConnections;
 use Lkt\Factory\Schemas\Schema;
 use Lkt\QueryBuilding\Query;
@@ -34,7 +35,7 @@ class QueryCaller extends Query
 
     /**
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     final public function select(): array
     {
@@ -46,7 +47,7 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        $r = $connection->query($this->getSelectQuery());
+        $r = $connection->query($connection->getSelectQuery($this));
 
         if (!is_array($r)) {
             $r = [];
@@ -56,7 +57,7 @@ class QueryCaller extends Query
 
     /**
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     final public function selectDistinct(): array
     {
@@ -68,13 +69,13 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        return $connection->query($this->getSelectDistinctQuery());
+        return $connection->query($connection->getSelectDistinctQuery($this));
     }
 
     /**
      * @param string $countableField
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
     final public function count(string $countableField): int
     {
@@ -86,14 +87,14 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        $results = $connection->query($this->getCountQuery($countableField));
+        $results = $connection->query($connection->getCountQuery($this, $countableField));
         return (int)$results[0]['Count'];
     }
 
     /**
      * @param string $countableField
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
     final public function pages(string $countableField): int
     {
@@ -102,7 +103,7 @@ class QueryCaller extends Query
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     final public function insert(): bool
     {
@@ -114,13 +115,13 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        $connection->query($this->getInsertQuery());
+        $connection->query($connection->getInsertQuery($this));
         return true;
     }
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     final public function update(): bool
     {
@@ -132,7 +133,7 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        $connection->query($this->getUpdateQuery());
+        $connection->query($connection->getUpdateQuery($this));
         return true;
     }
 
