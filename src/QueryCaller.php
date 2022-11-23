@@ -149,4 +149,85 @@ class QueryCaller extends Query
         }
         $this->setColumns($connection->extractSchemaColumns($schema));
     }
+
+    /**
+     * @return string
+     */
+    final public function getSelectQuery(): string
+    {
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
+        return $connection->getSelectQuery($this);
+    }
+
+    /**
+     * @return string
+     */
+    final public function getSelectDistinctQuery(): string
+    {
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
+        return $connection->getSelectDistinctQuery($this);
+    }
+
+    /**
+     * @param string $countableField
+     * @return string
+     */
+    final public function getCountQuery(string $countableField): string
+    {
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
+        return $connection->getCountQuery($this, $countableField);
+    }
+
+    /**
+     * @return string
+     */
+    final public function getInsertQuery(): string
+    {
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
+        return $connection->getInsertQuery($this);
+    }
+
+    /**
+     * @return string
+     */
+    final public function getUpdateQuery(): string
+    {
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
+        return $connection->getUpdateQuery($this);
+    }
 }
