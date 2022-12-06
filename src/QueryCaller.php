@@ -33,10 +33,6 @@ class QueryCaller extends Query
         return $this;
     }
 
-    /**
-     * @return array
-     * @throws Exception
-     */
     final public function select(): array
     {
         $connector = $this->connector;
@@ -55,10 +51,6 @@ class QueryCaller extends Query
         return $r;
     }
 
-    /**
-     * @return array
-     * @throws Exception
-     */
     final public function selectDistinct(): array
     {
         $connector = $this->connector;
@@ -72,11 +64,6 @@ class QueryCaller extends Query
         return $connection->query($connection->getSelectDistinctQuery($this));
     }
 
-    /**
-     * @param string $countableField
-     * @return int
-     * @throws Exception
-     */
     final public function count(string $countableField): int
     {
         $connector = $this->connector;
@@ -91,20 +78,11 @@ class QueryCaller extends Query
         return (int)$results[0]['Count'];
     }
 
-    /**
-     * @param string $countableField
-     * @return int
-     * @throws Exception
-     */
     final public function pages(string $countableField): int
     {
         return getTotalPages($this->count($countableField), $this->limit);
     }
 
-    /**
-     * @return bool
-     * @throws Exception
-     */
     final public function insert(): bool
     {
         $connector = $this->connector;
@@ -119,10 +97,6 @@ class QueryCaller extends Query
         return true;
     }
 
-    /**
-     * @return bool
-     * @throws Exception
-     */
     final public function update(): bool
     {
         $connector = $this->connector;
@@ -134,6 +108,20 @@ class QueryCaller extends Query
             $connection->forceRefreshNextQuery();
         }
         $connection->query($connection->getUpdateQuery($this));
+        return true;
+    }
+
+    final public function delete(): bool
+    {
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
+        $connection->query($connection->getDeleteQuery($this));
         return true;
     }
 
@@ -150,9 +138,6 @@ class QueryCaller extends Query
         $this->setColumns($connection->extractSchemaColumns($schema));
     }
 
-    /**
-     * @return string
-     */
     final public function getSelectQuery(): string
     {
         $connector = $this->connector;
@@ -166,9 +151,6 @@ class QueryCaller extends Query
         return $connection->getSelectQuery($this);
     }
 
-    /**
-     * @return string
-     */
     final public function getSelectDistinctQuery(): string
     {
         $connector = $this->connector;
@@ -182,10 +164,6 @@ class QueryCaller extends Query
         return $connection->getSelectDistinctQuery($this);
     }
 
-    /**
-     * @param string $countableField
-     * @return string
-     */
     final public function getCountQuery(string $countableField): string
     {
         $connector = $this->connector;
@@ -199,9 +177,6 @@ class QueryCaller extends Query
         return $connection->getCountQuery($this, $countableField);
     }
 
-    /**
-     * @return string
-     */
     final public function getInsertQuery(): string
     {
         $connector = $this->connector;
@@ -215,9 +190,6 @@ class QueryCaller extends Query
         return $connection->getInsertQuery($this);
     }
 
-    /**
-     * @return string
-     */
     final public function getUpdateQuery(): string
     {
         $connector = $this->connector;
@@ -229,5 +201,18 @@ class QueryCaller extends Query
             $connection->forceRefreshNextQuery();
         }
         return $connection->getUpdateQuery($this);
+    }
+
+    final public function getDeleteQuery(): string
+    {
+        $connector = $this->connector;
+        if ($connector === '') {
+            $connector = DatabaseConnections::$defaultConnector;
+        }
+        $connection = DatabaseConnections::get($connector);
+        if ($this->forceRefresh) {
+            $connection->forceRefreshNextQuery();
+        }
+        return $connection->getDeleteQuery($this);
     }
 }

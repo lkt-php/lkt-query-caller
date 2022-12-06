@@ -2,7 +2,7 @@
   "name": "lkt/query-caller",
   "description": "LKT Query Caller",
   "type": "library",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "require": {
     "php": ">=7.2.0",
     "lkt/database-connector": "^1.0.0",
