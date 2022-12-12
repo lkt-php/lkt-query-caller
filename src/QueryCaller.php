@@ -2,7 +2,6 @@
 
 namespace Lkt\QueryCaller;
 
-use Exception;
 use Lkt\DatabaseConnectors\DatabaseConnections;
 use Lkt\Factory\Schemas\Schema;
 use Lkt\QueryBuilding\Query;
@@ -10,6 +9,8 @@ use function Lkt\Tools\Pagination\getTotalPages;
 
 class QueryCaller extends Query
 {
+    const COMPONENT = null;
+
     protected $connector = '';
     protected $forceRefresh = false;
 
@@ -43,7 +44,7 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        $r = $connection->query($connection->getSelectQuery($this));
+        $r = $connection->query($this->getSelectQuery());
 
         if (!is_array($r)) {
             $r = [];
@@ -61,7 +62,7 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        return $connection->query($connection->getSelectDistinctQuery($this));
+        return $connection->query($this->getSelectDistinctQuery());
     }
 
     final public function count(string $countableField): int
@@ -74,7 +75,7 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        $results = $connection->query($connection->getCountQuery($this, $countableField));
+        $results = $connection->query($this->getCountQuery($countableField));
         return (int)$results[0]['Count'];
     }
 
@@ -93,7 +94,7 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        $connection->query($connection->getInsertQuery($this));
+        $connection->query($this->getInsertQuery());
         return true;
     }
 
@@ -107,7 +108,7 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        $connection->query($connection->getUpdateQuery($this));
+        $connection->query($this->getUpdateQuery());
         return true;
     }
 
@@ -121,7 +122,7 @@ class QueryCaller extends Query
         if ($this->forceRefresh) {
             $connection->forceRefreshNextQuery();
         }
-        $connection->query($connection->getDeleteQuery($this));
+        $connection->query($this->getDeleteQuery());
         return true;
     }
 
@@ -145,9 +146,6 @@ class QueryCaller extends Query
             $connector = DatabaseConnections::$defaultConnector;
         }
         $connection = DatabaseConnections::get($connector);
-        if ($this->forceRefresh) {
-            $connection->forceRefreshNextQuery();
-        }
         return $connection->getSelectQuery($this);
     }
 
@@ -158,9 +156,6 @@ class QueryCaller extends Query
             $connector = DatabaseConnections::$defaultConnector;
         }
         $connection = DatabaseConnections::get($connector);
-        if ($this->forceRefresh) {
-            $connection->forceRefreshNextQuery();
-        }
         return $connection->getSelectDistinctQuery($this);
     }
 
@@ -171,9 +166,6 @@ class QueryCaller extends Query
             $connector = DatabaseConnections::$defaultConnector;
         }
         $connection = DatabaseConnections::get($connector);
-        if ($this->forceRefresh) {
-            $connection->forceRefreshNextQuery();
-        }
         return $connection->getCountQuery($this, $countableField);
     }
 
@@ -184,9 +176,6 @@ class QueryCaller extends Query
             $connector = DatabaseConnections::$defaultConnector;
         }
         $connection = DatabaseConnections::get($connector);
-        if ($this->forceRefresh) {
-            $connection->forceRefreshNextQuery();
-        }
         return $connection->getInsertQuery($this);
     }
 
@@ -197,9 +186,6 @@ class QueryCaller extends Query
             $connector = DatabaseConnections::$defaultConnector;
         }
         $connection = DatabaseConnections::get($connector);
-        if ($this->forceRefresh) {
-            $connection->forceRefreshNextQuery();
-        }
         return $connection->getUpdateQuery($this);
     }
 
@@ -210,9 +196,6 @@ class QueryCaller extends Query
             $connector = DatabaseConnections::$defaultConnector;
         }
         $connection = DatabaseConnections::get($connector);
-        if ($this->forceRefresh) {
-            $connection->forceRefreshNextQuery();
-        }
         return $connection->getDeleteQuery($this);
     }
 }
