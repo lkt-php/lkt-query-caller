@@ -4,6 +4,7 @@ namespace Lkt\QueryCaller;
 
 use Lkt\DatabaseConnectors\DatabaseConnections;
 use Lkt\Factory\Schemas\Schema;
+use Lkt\QueryBuilding\Constraints\SubQueryCountEqualConstraint;
 use Lkt\QueryBuilding\Query;
 use function Lkt\Tools\Pagination\getTotalPages;
 
@@ -197,5 +198,17 @@ class QueryCaller extends Query
         }
         $connection = DatabaseConnections::get($connector);
         return $connection->getDeleteQuery($this);
+    }
+
+    final public function andSubQueryCountEqual(QueryCaller $query, int $value, string $countableField): self
+    {
+        $this->and[] = SubQueryCountEqualConstraint::define($query->getCountQuery($countableField), $value);
+        return $this;
+    }
+
+    final public function orSubQueryCountEqual(QueryCaller $query, int $value, string $countableField): self
+    {
+        $this->and[] = SubQueryCountEqualConstraint::define($query->getCountQuery($countableField), $value);
+        return $this;
     }
 }
