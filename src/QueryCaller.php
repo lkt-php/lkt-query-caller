@@ -12,14 +12,14 @@ class QueryCaller extends Query
 {
     const COMPONENT = null;
 
-    protected $connector = '';
-    protected $forceRefresh = false;
+    protected string $connector = '';
+    protected bool $forceRefresh = false;
 
     /**
      * @param bool $status
      * @return $this
      */
-    public function setForceRefresh(bool $status): self
+    public function setForceRefresh(bool $status): static
     {
         $this->forceRefresh= $status;
         return $this;
@@ -29,7 +29,7 @@ class QueryCaller extends Query
      * @param string $name
      * @return $this
      */
-    public function setDatabaseConnector(string $name): self
+    public function setDatabaseConnector(string $name): static
     {
         $this->connector = $name;
         return $this;
@@ -200,13 +200,13 @@ class QueryCaller extends Query
         return $connection->getDeleteQuery($this);
     }
 
-    final public function andSubQueryCountEqual(QueryCaller $query, int $value, string $countableField): self
+    final public function andSubQueryCountEqual(QueryCaller $query, int $value, string $countableField): static
     {
         $this->and[] = SubQueryCountEqualConstraint::define($query->getCountQuery($countableField), $value);
         return $this;
     }
 
-    final public function orSubQueryCountEqual(QueryCaller $query, int $value, string $countableField): self
+    final public function orSubQueryCountEqual(QueryCaller $query, int $value, string $countableField): static
     {
         $this->and[] = SubQueryCountEqualConstraint::define($query->getCountQuery($countableField), $value);
         return $this;
