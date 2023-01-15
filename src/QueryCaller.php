@@ -5,6 +5,8 @@ namespace Lkt\QueryCaller;
 use Lkt\DatabaseConnectors\DatabaseConnections;
 use Lkt\Factory\Schemas\Schema;
 use Lkt\QueryBuilding\Constraints\SubQueryCountEqualConstraint;
+use Lkt\QueryBuilding\Constraints\FieldInSubQueryConstraint;
+use Lkt\QueryBuilding\Constraints\FieldNotInSubQueryConstraint;
 use Lkt\QueryBuilding\Query;
 use function Lkt\Tools\Pagination\getTotalPages;
 
@@ -209,6 +211,30 @@ class QueryCaller extends Query
     final public function orSubQueryCountEqual(QueryCaller $query, int $value, string $countableField): static
     {
         $this->and[] = SubQueryCountEqualConstraint::define($query->getCountQuery($countableField), $value);
+        return $this;
+    }
+
+    final public function andFieldInSubQuery(string $value, QueryCaller $query): static
+    {
+        $this->and[] = FieldInSubQueryConstraint::define($value, $query->getSelectDistinctQuery());
+        return $this;
+    }
+
+    final public function orFieldInSubQuery(string $value, QueryCaller $query): static
+    {
+        $this->and[] = FieldInSubQueryConstraint::define($value, $query->getSelectDistinctQuery());
+        return $this;
+    }
+
+    final public function andFieldNotInSubQuery(string $value, QueryCaller $query): static
+    {
+        $this->and[] = FieldNotInSubQueryConstraint::define($value, $query->getSelectDistinctQuery());
+        return $this;
+    }
+
+    final public function orFieldNotInSubQuery(string $value, QueryCaller $query): static
+    {
+        $this->and[] = FieldNotInSubQueryConstraint::define($value, $query->getSelectDistinctQuery());
         return $this;
     }
 }
